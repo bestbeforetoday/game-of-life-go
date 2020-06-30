@@ -2,7 +2,8 @@ package life
 
 // Game of life. Constructor functions should be used to create instances.
 type Game struct {
-	cells Cells
+	cells     Cells
+	neighbors func(Point) []Point
 }
 
 // State of a cell
@@ -18,14 +19,30 @@ const (
 // Cells represented by a map keyed by position and with a value of true if that position is a live cell
 type Cells map[Point]State
 
-// NewGame creates a Game populated with the supplied live cells
-func NewGame(liveCells []Point) Game {
-	cells := make(Cells, len(liveCells))
-	for _, location := range liveCells {
+// NewUnboundedGame creates an unbounded Game populated with the supplied live cells
+func NewUnboundedGame(liveCellLocations []Point) Game {
+	return Game{
+		cells:     newCells(liveCellLocations),
+		neighbors: unboundedNeighbors,
+	}
+}
+
+// NewBoundedGame creates a bounded Game populated with the supplied live cells. The game is a rectangular area with
+// corners at the minimum and maximum points. No cells can live outside of the game area.
+func NewBoundedGame(liveCellLocations []Point, min Point, max Point) Game {
+	return Game{
+		cells:     newCells(liveCellLocations),
+		neighbors: boundedNeighbors(min, max)}
+}
+
+func newCells(locations []Point) Cells {
+	cells := make(Cells, len(locations))
+
+	for _, location := range locations {
 		cells[location] = Alive
 	}
 
-	return Game{cells}
+	return cells
 }
 
 // Cells in the game
@@ -44,7 +61,7 @@ func (g Game) Next() Game {
 		nextCells = append(nextCells, g.neighbourBirths(location)...)
 	})
 
-	return NewGame(nextCells)
+	return NewUnboundedGame(nextCells)
 }
 
 func (g Game) forEachLiveCell(fn func(Point)) {
@@ -59,7 +76,7 @@ func (g Game) isSurvivor(location Point) bool {
 }
 
 func (g Game) liveNeighbourCount(location Point) (count int) {
-	forEachNeighbour(location, func(neighbour Point) {
+	g.forEachNeighbour(location, func(neighbour Point) {
 		if g.cells[neighbour] == Alive {
 			count++
 		}
@@ -67,14 +84,14 @@ func (g Game) liveNeighbourCount(location Point) (count int) {
 	return count
 }
 
-func forEachNeighbour(location Point, fn func(Point)) {
-	for _, neighbour := range neighbours(location) {
+func (g Game) forEachNeighbour(location Point, fn func(Point)) {
+	for _, neighbour := range g.neighbors(location) {
 		fn(neighbour)
 	}
 }
 
 func (g Game) neighbourBirths(location Point) (locations []Point) {
-	forEachNeighbour(location, func(neighbour Point) {
+	g.forEachNeighbour(location, func(neighbour Point) {
 		if g.isBorn(neighbour) {
 			locations = append(locations, neighbour)
 		}
@@ -86,7 +103,22 @@ func (g Game) isBorn(location Point) bool {
 	return g.cells[location] == Dead && g.liveNeighbourCount(location) == 3
 }
 
-func neighbours(p Point) []Point {
+func boundedNeighbors(min Point, max Point) func(Point) []Point {
+	return func(p Point) []Point {
+		possibleNeighbors := unboundedNeighbors(p)
+
+		neighbors := make([]Point, 0, len(possibleNeighbors))
+		for _, neighbour := range possibleNeighbors {
+			if !neighbour.LessThan(min) && !neighbour.GreaterThan(max) {
+				neighbors = append(neighbors, neighbour)
+			}
+		}
+
+		return neighbors
+	}
+}
+
+func unboundedNeighbors(p Point) []Point {
 	return []Point{
 		{p.X - 1, p.Y - 1},
 		{p.X - 1, p.Y},

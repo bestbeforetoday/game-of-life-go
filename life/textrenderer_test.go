@@ -19,21 +19,21 @@ func assertEquals(t *testing.T, actual string, expected string) {
 
 func TestSingleLiveCell(t *testing.T) {
 	renderer := newRenderer(Point{0, 0}, Point{0, 0})
-	game := NewGame([]Point{{0, 0}})
+	game := NewUnboundedGame([]Point{{0, 0}})
 	actual := renderer.Render(game)
 	assertEquals(t, actual, "*")
 }
 
 func TestSingleDeadCell(t *testing.T) {
 	renderer := newRenderer(Point{0, 0}, Point{0, 0})
-	game := NewGame(make([]Point, 0))
+	game := NewUnboundedGame(make([]Point, 0))
 	actual := renderer.Render(game)
 	assertEquals(t, actual, " ")
 }
 
 func TestRenderSingleRow(t *testing.T) {
 	renderer := newRenderer(Point{0, 0}, Point{4, 0})
-	game := NewGame([]Point{
+	game := NewUnboundedGame([]Point{
 		{0, 0},
 		{2, 0},
 		{4, 0},
@@ -44,7 +44,7 @@ func TestRenderSingleRow(t *testing.T) {
 
 func TestRenderMultipleRows(t *testing.T) {
 	renderer := newRenderer(Point{0, 0}, Point{1, 2})
-	game := NewGame([]Point{
+	game := NewUnboundedGame([]Point{
 		{0, 0},
 		{1, 2},
 	})
@@ -54,7 +54,7 @@ func TestRenderMultipleRows(t *testing.T) {
 
 func TestRenderWindowOnLargerGame(t *testing.T) {
 	renderer := newRenderer(Point{1, 1}, Point{2, 2})
-	game := NewGame([]Point{
+	game := NewUnboundedGame([]Point{
 		{2, 0},
 		{1, 1},
 		{1, 2},

@@ -19,7 +19,7 @@ func (r TextRenderer) Render(game Game) string {
 		if y > r.Min.Y {
 			builder.WriteRune('\n')
 		}
-		builder.WriteString(r.renderRow(cells, y))
+		r.writeRow(builder, cells, y)
 	}
 
 	return builder.String()
@@ -33,16 +33,12 @@ func (r TextRenderer) newRenderBuilder() *strings.Builder {
 	return &builder
 }
 
-func (r TextRenderer) renderRow(cells Cells, y int) string {
-	var builder strings.Builder
-	builder.Grow(r.Max.X - r.Min.X)
-
+func (r TextRenderer) writeRow(builder *strings.Builder, cells Cells, y int) {
 	for x := r.Min.X; x <= r.Max.X; x++ {
 		state := cells[Point{X: x, Y: y}]
-		builder.WriteRune(r.renderCell(state))
+		cell := r.renderCell(state)
+		builder.WriteRune(cell)
 	}
-
-	return builder.String()
 }
 
 func (r TextRenderer) renderCell(state State) rune {
