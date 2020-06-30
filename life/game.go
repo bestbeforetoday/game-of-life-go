@@ -32,7 +32,8 @@ func NewUnboundedGame(liveCellLocations []Point) Game {
 func NewBoundedGame(liveCellLocations []Point, min Point, max Point) Game {
 	return Game{
 		cells:     newCells(liveCellLocations),
-		neighbors: boundedNeighbors(min, max)}
+		neighbors: boundedNeighbors(min, max),
+	}
 }
 
 func newCells(locations []Point) Cells {
@@ -61,7 +62,10 @@ func (g Game) Next() Game {
 		nextCells = append(nextCells, g.neighborBirths(location)...)
 	})
 
-	return NewUnboundedGame(nextCells)
+	return Game{
+		cells:     newCells(nextCells),
+		neighbors: g.neighbors,
+	}
 }
 
 func (g Game) forEachLiveCell(fn func(Point)) {
