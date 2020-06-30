@@ -58,7 +58,7 @@ func (g Game) Next() Game {
 		if g.isSurvivor(location) {
 			nextCells = append(nextCells, location)
 		}
-		nextCells = append(nextCells, g.neighbourBirths(location)...)
+		nextCells = append(nextCells, g.neighborBirths(location)...)
 	})
 
 	return NewUnboundedGame(nextCells)
@@ -71,36 +71,36 @@ func (g Game) forEachLiveCell(fn func(Point)) {
 }
 
 func (g Game) isSurvivor(location Point) bool {
-	liveNeighbourCount := g.liveNeighbourCount(location)
-	return liveNeighbourCount == 2 || liveNeighbourCount == 3
+	liveNeighborCount := g.liveNeighborCount(location)
+	return liveNeighborCount == 2 || liveNeighborCount == 3
 }
 
-func (g Game) liveNeighbourCount(location Point) (count int) {
-	g.forEachNeighbour(location, func(neighbour Point) {
-		if g.cells[neighbour] == Alive {
+func (g Game) liveNeighborCount(location Point) (count int) {
+	g.forEachNeighbor(location, func(neighbor Point) {
+		if g.cells[neighbor] == Alive {
 			count++
 		}
 	})
 	return count
 }
 
-func (g Game) forEachNeighbour(location Point, fn func(Point)) {
-	for _, neighbour := range g.neighbors(location) {
-		fn(neighbour)
+func (g Game) forEachNeighbor(location Point, fn func(Point)) {
+	for _, neighbor := range g.neighbors(location) {
+		fn(neighbor)
 	}
 }
 
-func (g Game) neighbourBirths(location Point) (locations []Point) {
-	g.forEachNeighbour(location, func(neighbour Point) {
-		if g.isBorn(neighbour) {
-			locations = append(locations, neighbour)
+func (g Game) neighborBirths(location Point) (locations []Point) {
+	g.forEachNeighbor(location, func(neighbor Point) {
+		if g.isBorn(neighbor) {
+			locations = append(locations, neighbor)
 		}
 	})
 	return locations
 }
 
 func (g Game) isBorn(location Point) bool {
-	return g.cells[location] == Dead && g.liveNeighbourCount(location) == 3
+	return g.cells[location] == Dead && g.liveNeighborCount(location) == 3
 }
 
 func boundedNeighbors(min Point, max Point) func(Point) []Point {
@@ -108,9 +108,9 @@ func boundedNeighbors(min Point, max Point) func(Point) []Point {
 		possibleNeighbors := unboundedNeighbors(p)
 
 		neighbors := make([]Point, 0, len(possibleNeighbors))
-		for _, neighbour := range possibleNeighbors {
-			if !neighbour.LessThan(min) && !neighbour.GreaterThan(max) {
-				neighbors = append(neighbors, neighbour)
+		for _, neighbor := range possibleNeighbors {
+			if !neighbor.LessThan(min) && !neighbor.GreaterThan(max) {
+				neighbors = append(neighbors, neighbor)
 			}
 		}
 

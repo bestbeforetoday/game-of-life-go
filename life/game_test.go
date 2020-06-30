@@ -18,9 +18,9 @@ func TestLiveCell(t *testing.T) {
 		8: Dead,
 	}
 
-	for neighbourCount, nextState := range neighborsStateMap {
+	for neighborCount, nextState := range neighborsStateMap {
 		cell := Point{1, 1}
-		neighbors := unboundedNeighbors(cell)[0:neighbourCount]
+		neighbors := unboundedNeighbors(cell)[0:neighborCount]
 		livesText := "Dies"
 		if nextState == Alive {
 			livesText = "Survives"
@@ -49,9 +49,9 @@ func TestDeadCell(t *testing.T) {
 		8: Dead,
 	}
 
-	for neighbourCount, nextState := range neighborsStateMap {
+	for neighborCount, nextState := range neighborsStateMap {
 		cell := Point{1, 1}
-		neighbors := unboundedNeighbors(cell)[0:neighbourCount]
+		neighbors := unboundedNeighbors(cell)[0:neighborCount]
 		livesText := "Stays dead"
 		if nextState == Alive {
 			livesText = "Becomes live"
