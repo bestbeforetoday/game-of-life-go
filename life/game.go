@@ -53,17 +53,17 @@ func (g *Game) Cells() Cells {
 
 // Next iteration of the game
 func (g *Game) Next() *Game {
-	var nextCells []Point
+	nextCells := make(Cells)
 
 	g.forEachLiveCell(func(location Point) {
 		if g.isSurvivor(location) {
-			nextCells = append(nextCells, location)
+			nextCells[location] = Alive
 		}
-		nextCells = append(nextCells, g.neighborBirths(location)...)
+		g.addNeighborBirths(nextCells, location)
 	})
 
 	return &Game{
-		cells:     newCells(nextCells),
+		cells:     nextCells,
 		neighbors: g.neighbors,
 	}
 }
@@ -94,13 +94,12 @@ func (g *Game) forEachNeighbor(location Point, fn func(Point)) {
 	}
 }
 
-func (g *Game) neighborBirths(location Point) (locations []Point) {
+func (g *Game) addNeighborBirths(cells Cells, location Point) {
 	g.forEachNeighbor(location, func(neighbor Point) {
-		if g.isBorn(neighbor) {
-			locations = append(locations, neighbor)
+		if cells[neighbor] != Alive && g.isBorn(neighbor) {
+			cells[neighbor] = Alive
 		}
 	})
-	return locations
 }
 
 func (g *Game) isBorn(location Point) bool {
