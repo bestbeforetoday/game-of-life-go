@@ -49,7 +49,7 @@ func TestRenderMultipleRows(t *testing.T) {
 		{1, 2},
 	})
 	actual := renderer.Render(game)
-	assertEquals(t, actual, "* \n  \n *")
+	assertEquals(t, actual, " *\n  \n* ")
 }
 
 func TestRenderWindowOnLargerGame(t *testing.T) {

@@ -15,8 +15,8 @@ func (r *TextRenderer) Render(game *Game) string {
 	builder := r.newRenderBuilder()
 	cells := game.Cells()
 
-	for y := r.Min.Y; y <= r.Max.Y; y++ {
-		if y > r.Min.Y {
+	for y := r.Max.Y; y >= r.Min.Y; y-- {
+		if y < r.Max.Y {
 			builder.WriteRune('\n')
 		}
 		r.writeRow(builder, cells, y)
