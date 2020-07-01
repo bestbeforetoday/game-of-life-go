@@ -11,7 +11,7 @@ type TextRenderer struct {
 }
 
 // Render a game as text
-func (r TextRenderer) Render(game Game) string {
+func (r *TextRenderer) Render(game *Game) string {
 	builder := r.newRenderBuilder()
 	cells := game.Cells()
 
@@ -25,7 +25,7 @@ func (r TextRenderer) Render(game Game) string {
 	return builder.String()
 }
 
-func (r TextRenderer) newRenderBuilder() *strings.Builder {
+func (r *TextRenderer) newRenderBuilder() *strings.Builder {
 	var builder strings.Builder
 	rowCount := r.Max.Y - r.Min.Y + 1
 	columnCount := r.Max.X - r.Min.X + 1
@@ -33,7 +33,7 @@ func (r TextRenderer) newRenderBuilder() *strings.Builder {
 	return &builder
 }
 
-func (r TextRenderer) writeRow(builder *strings.Builder, cells Cells, y int) {
+func (r *TextRenderer) writeRow(builder *strings.Builder, cells Cells, y int) {
 	for x := r.Min.X; x <= r.Max.X; x++ {
 		state := cells[Point{X: x, Y: y}]
 		cell := r.renderCell(state)
@@ -41,7 +41,7 @@ func (r TextRenderer) writeRow(builder *strings.Builder, cells Cells, y int) {
 	}
 }
 
-func (r TextRenderer) renderCell(state State) rune {
+func (r *TextRenderer) renderCell(state State) rune {
 	if state == Alive {
 		return r.Alive
 	}
