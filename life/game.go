@@ -7,13 +7,13 @@ type Game struct {
 }
 
 // State of a cell
-type State bool
+type State int
 
 const (
-	// Alive indicates that a cell is alive
-	Alive State = true
 	// Dead indicates that a cell is dead
-	Dead State = false
+	Dead State = iota
+	// Alive indicates that a cell is alive
+	Alive
 )
 
 // Cells represented by a map keyed by position and with a value of true if that position is a live cell
