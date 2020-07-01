@@ -2,8 +2,8 @@ package life
 
 import "testing"
 
-func newRenderer(min Point, max Point) TextRenderer {
-	return TextRenderer{
+func newRenderer(min Point, max Point) *TextRenderer {
+	return &TextRenderer{
 		Alive: '*',
 		Dead:  ' ',
 		Min:   min,
