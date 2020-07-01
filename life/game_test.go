@@ -109,6 +109,51 @@ func TestBoundaries(t *testing.T) {
 		}
 
 	})
+
+	t.Run("Glider runs without boundary", func(t *testing.T) {
+		cells := []Point{
+			{1, 0},
+			{2, 1},
+			{0, 2}, {1, 2}, {2, 2},
+		}
+		game := NewUnboundedGame(cells)
+
+		for i := 0; i < 8; i++ {
+			game = game.Next()
+		}
+		result := game.Cells()
+
+		expected := []Point{
+			{3, 2},
+			{4, 3},
+			{2, 4}, {3, 4}, {4, 4},
+		}
+		if !hasExactlyLocations(result, expected) {
+			t.Errorf("Expected %v, got %v", cells, result)
+		}
+	})
+
+	t.Run("Glider stops with boundary", func(t *testing.T) {
+		cells := []Point{
+			{1, 0},
+			{2, 1},
+			{0, 2}, {1, 2}, {2, 2},
+		}
+		min := Point{0, 0}
+		max := Point{3, 3}
+		game := NewBoundedGame(cells, min, max)
+
+		for i := 0; i < 8; i++ {
+			game = game.Next()
+		}
+		result := game.Cells()
+
+		for point := range result {
+			if point.GreaterThan(max) {
+				t.Errorf("Expected all cells within bound, got %v", result)
+			}
+		}
+	})
 }
 
 func hasExactlyLocations(cells Cells, locations []Point) bool {
